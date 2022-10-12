@@ -9,6 +9,7 @@ import {
   RocketOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { ItemType } from "antd/lib/menu/hooks/useItems";
 
 const { Title } = Typography;
 const { Sider } = Layout;
@@ -18,6 +19,8 @@ const SideMenu = () => {
   const showManagement = enableRBAC
     ? enableRBAC
     : process.env.REACT_APP_ENABLE_RBAC;
+
+  const menuItems: ItemType[] = [];
 
   return (
     <Sider theme="dark">
@@ -37,6 +40,7 @@ const SideMenu = () => {
         mode="inline"
         defaultSelectedKeys={["/"]}
         defaultOpenKeys={["/"]}
+        // items={menuItems}
       >
         <Menu.Item
           key="/home"

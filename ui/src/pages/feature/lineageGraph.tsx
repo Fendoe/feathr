@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card, Col, Radio, Row, Spin, Tabs, Typography } from "antd";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Elements } from "react-flow-renderer";
-import Graph from "../../components/graph/graph";
+import FlowGraph from "@/components/flow-graph";
 import { fetchProjectLineages } from "../../api";
 import { FeatureLineage } from "../../models/model";
 import { LoadingOutlined } from "@ant-design/icons";
 import GraphNodeDetails from "../../components/graph/graphNodeDetails";
-import { getElements } from "../../components/graph/utils";
 import { FeatureType } from "../../utils/utils";
 
 const { Title } = Typography;
@@ -22,12 +20,14 @@ const LineageGraph = () => {
   const nodeId = searchParams.get("nodeId") as string;
 
   const [lineageData, setLineageData] = useState<FeatureLineage>({
-    guidEntityMap: null,
-    relations: null,
+    guidEntityMap: {},
+    relations: [],
   });
+
   const [loading, setLoading] = useState<boolean>(false);
-  const [elements, SetElements] = useState<Elements>([]);
-  const [featureType, setFeatureType] = useState<string | null>("all_nodes");
+  const [featureType, setFeatureType] = useState<FeatureType>(
+    FeatureType.AllNodes
+  );
 
   // Fetch lineage data from server side, invoked immediately after component is mounted
   useEffect(() => {
@@ -41,22 +41,8 @@ const LineageGraph = () => {
     fetchLineageData();
   }, [project]);
 
-  // Generate graph data on client side, invoked after graphData or featureType is changed
-  useEffect(() => {
-    const generateGraphData = async () => {
-      SetElements(getElements(lineageData, featureType)!);
-    };
-
-    generateGraphData();
-  }, [lineageData, featureType]);
-
-  const toggleFeatureType = (type: string) => {
-    setFeatureType((prevType: string | null) => {
-      if (prevType === type) {
-        return null;
-      }
-      return type;
-    });
+  const toggleFeatureType = (type: FeatureType) => {
+    setFeatureType(type);
   };
 
   return (
@@ -70,7 +56,7 @@ const LineageGraph = () => {
           >
             <Radio.Button value={FeatureType.AllNodes}>All Nodes</Radio.Button>
             <Radio.Button value={FeatureType.Source}> Source </Radio.Button>
-            <Radio.Button value={FeatureType.Anchor}>Anchor</Radio.Button>
+            {/* <Radio.Button value={FeatureType.Anchor}>Anchor</Radio.Button> */}
             <Radio.Button value={FeatureType.AnchorFeature}>
               Anchor Feature
             </Radio.Button>
@@ -87,7 +73,11 @@ const LineageGraph = () => {
           ) : (
             <Row>
               <Col flex="2">
-                <Graph data={elements} nodeId={nodeId} />
+                <FlowGraph
+                  data={lineageData}
+                  nodeId={nodeId}
+                  featureType={featureType}
+                />
               </Col>
               <Col flex="1">
                 <Tabs defaultActiveKey="1">

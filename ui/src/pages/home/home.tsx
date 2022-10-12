@@ -8,12 +8,15 @@ import {
   ProjectOutlined,
 } from "@ant-design/icons";
 
+import styles from "./index.module.less";
+
 const { Title } = Typography;
 
 const Home = () => {
   return (
     <div className="page">
       <Card
+        className={styles.card}
         style={{
           boxShadow: "5px 8px 15px 5px rgba(208, 216, 243, 0.6)",
           borderRadius: "8px",

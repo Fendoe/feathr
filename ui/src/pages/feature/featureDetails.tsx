@@ -4,13 +4,11 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { QueryStatus, useQuery } from "react-query";
 import { AxiosError } from "axios";
+import FlowGraph from "@/components/flow-graph";
 import { fetchFeature } from "../../api";
 import { Feature, InputFeature } from "../../models/model";
 import { FeatureLineage } from "../../models/model";
 import { fetchFeatureLineages } from "../../api";
-import { Elements } from "react-flow-renderer";
-import Graph from "../../components/graph/graph";
-import { getElements } from "../../components/graph/utils";
 
 const { Title } = Typography;
 
@@ -173,10 +171,10 @@ const InputDerivedFeatures = ({
 const FeatureLineageGraph = () => {
   const { featureId } = useParams() as Params;
   const [lineageData, setLineageData] = useState<FeatureLineage>({
-    guidEntityMap: null,
-    relations: null,
+    guidEntityMap: {},
+    relations: [],
   });
-  const [elements, SetElements] = useState<Elements>([]);
+
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -190,15 +188,6 @@ const FeatureLineageGraph = () => {
     fetchLineageData();
   }, [featureId]);
 
-  // Generate graph data on client side, invoked after graphData or featureType is changed
-  useEffect(() => {
-    const generateGraphData = async () => {
-      SetElements(getElements(lineageData, "all_nodes")!);
-    };
-
-    generateGraphData();
-  }, [lineageData]);
-
   return (
     <>
       {loading ? (
@@ -207,7 +196,7 @@ const FeatureLineageGraph = () => {
         <Col span={24}>
           <Card className="card">
             <Title level={4}>Lineage</Title>
-            <Graph data={elements} nodeId={featureId} />
+            <FlowGraph data={lineageData} nodeId={featureId} />
           </Card>
         </Col>
       )}

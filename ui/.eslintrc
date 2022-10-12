@@ -20,7 +20,8 @@
     "sourceType": "module"
   },
   "rules": {
-    "dot-notation": "error"
+    "dot-notation": "error",
+    "no-unused-expressions": "off"
   },
   "overrides": [
     {

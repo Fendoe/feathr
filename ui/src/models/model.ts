@@ -82,9 +82,15 @@ export interface DataSourceAttributes {
   type: string;
 }
 
+export interface RelationData {
+  fromEntityId: string;
+  relationshipId: string;
+  relationshipType: string;
+  toEntityId: string;
+}
 export interface FeatureLineage {
-  guidEntityMap: any;
-  relations: any;
+  guidEntityMap: Record<string, Feature>;
+  relations: RelationData[];
 }
 
 export interface UserRole {
